@@ -1,1 +1,1 @@
-a
+kompanimizin yaptığı yeni/zaten olan dillers
