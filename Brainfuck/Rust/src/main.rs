@@ -1,9 +1,11 @@
-use std::io::stdin;
+use std::fs::OpenOptions;
+use std::io::{Read, stdin};
 use crate::Token::{Dec, In, Inc, Left, Loop, Out, Right};
 
 fn main() {
+    let args:Vec<String> = std::env::args().collect();
     let mut code = String::new();
-    stdin().read_line(&mut code).unwrap();
+    OpenOptions::new().read(true).open(&args[0]).unwrap().read_to_string(&mut code).unwrap();
     interpret(lex_parse(&code));
 }
 
@@ -11,7 +13,7 @@ fn main() {
 fn interpret(code:Vec<Token>){
     let mut mem = [0;30000];
     let mut cursor = 0;
-    if(code.contains(&In)){
+    if code.contains(&In){
         let mut input_alt = String::new();
         stdin().read_line(&mut input_alt).unwrap();
         let mut input = input_alt.bytes().collect();
@@ -83,4 +85,13 @@ enum Token{
     Out,
     Loop(Vec<Token>)
 
+}
+#[cfg(test)]
+mod tests{
+    use super::*;
+
+    #[test]
+    fn lop(){
+        assert_eq!(lex_parse("[+]><.,-"),vec![Loop(vec![Inc]),Right,Left,Out,In,Dec])
+    }
 }
